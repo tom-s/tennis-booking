@@ -36,7 +36,7 @@ const runBooking = () => {
     .wait('form[name=tableauJourForm]')
     .click('a#fd-but-date')
     .evaluate(function () {
-      return document.querySelector('table.date-picker-table').href
+      return document.querySelector('table.date-picker-table') // todo
     })
     .end()
     .then(function (result) {
@@ -46,22 +46,3 @@ const runBooking = () => {
     console.error('Search failed:', error)
   })
 }
-
-    /*
-  casper.then(() => {
-    console.log("FORM", document.querySelectorAll('form[name=membreLoginForm]'))
-    this.fill('form[name=membreLoginForm]', {
-      'login': 'thomasschell',
-      'password': 'tenraymonde',
-    }, false)
-  }, (ret) => {
-    console.log('login form filled')
-})
-
-  
-  console.log("3 ---")
-  casper.then(() => {
-    //this.click('input[name=buttonConnecter]')
-    console.log("loggin in")
-  })
-  */
