@@ -56,6 +56,11 @@ waterfall([
   }
 ], (err, { remote, data}) => {
   //runBooking(result)
-  console.log("result", remote, data)
-  remote.book(data)
+  remote.book(data, (err, res) => {
+    if(err) {
+      console.log("an error occured", err)
+    } else {
+      console.log("booking done")
+    }
+  })
 })

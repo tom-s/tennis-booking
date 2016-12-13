@@ -3,7 +3,7 @@ import NightmareFactory from 'nightmare'
 import { LOGIN_URL, USERNAME, PWD, PLAYERS, SOCKET_PORT } from '../../config'
 
 /* Run casper scraper */
-const runBooking = (date, cb) => {
+const runBooking = (data, cb) => {
   const nightmare = NightmareFactory({ 
     show: true,
     typeInterval: 20 
@@ -17,9 +17,9 @@ const runBooking = (date, cb) => {
     .click('a[title="Tableaux par jour"]')
     .wait('a#fd-but-date')
     .click('a#fd-but-date')
-    .click(`.cd-${date.year}${date.month}${date.day}`)
-    .wait(`div[title*="${date.startTime}h00 à"]`)
-    .click(`#scrollDonneesTableau>div .colonneCourtJour:nth-child(${date.court}) div[title*="${date.startTime}h00 à"]`)
+    .click(`.cd-${data.year}${data.month}${data.day}`)
+    .wait(`div[title*="${data.startTime}h00 à"]`)
+    .click(`#scrollDonneesTableau>div .colonneCourtJour:nth-child(${data.court}) div[title*="${data.startTime}h00 à"]`)
     .wait('form#reservationPonctuelleJoueurForm')
     .evaluate(() => {
       // Make hidden inputs visible so that we can modify their values
@@ -35,19 +35,14 @@ const runBooking = (date, cb) => {
     //.click('.dialog input[name=buttonRechercher]') only when in prod !
     //.wait('#fsdf')
     .end()
-    .then(cb)
+    .then(() => { cb(null, data )})
+    .catch((e) => { cb(e) })
 }
 
 const server = dnode({
   book : (data, cb) => {
     console.log("try booking", data)
-    try {
-      runBooking(data, () => {
-        cb(null, data)
-      })
-    } catch(e) {
-      cb(e) 
-    }
+    runBooking(data, cb)
   }
 })
 
