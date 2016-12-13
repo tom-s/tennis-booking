@@ -32,9 +32,9 @@ const runBooking = () => {
     .type('form[name=membreLoginForm] [name=password]', PWD)
     .click('form[name=membreLoginForm] input[name=buttonConnecter]')
     .wait('form[name=membreIdentiteForm]')
-    .goto('https://adoc.app.fft.fr/adoc/tableauJourJoueur.do?method=readJoueur')
-    .wait('#tableauCourt')
-    //.click('a#fd-but-date')
+    .click('a[title="Tableaux par jour"]')
+    //.wait('form[name=tableauJourForm]')
+    //.click('a.date-picker-control')
     //.click('.cd-20161205')
     .end()
     .then(function (result) {

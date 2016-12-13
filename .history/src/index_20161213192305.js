@@ -34,8 +34,8 @@ const runBooking = () => {
     .wait('form[name=membreIdentiteForm]')
     .goto('https://adoc.app.fft.fr/adoc/tableauJourJoueur.do?method=readJoueur')
     .wait('#tableauCourt')
-    //.click('a#fd-but-date')
-    //.click('.cd-20161205')
+    .click('a.date-picker-control')
+    .click('.cd-20161205')
     .end()
     .then(function (result) {
       console.log("Booking done !", result)

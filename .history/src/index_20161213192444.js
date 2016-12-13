@@ -34,7 +34,7 @@ const runBooking = () => {
     .wait('form[name=membreIdentiteForm]')
     .goto('https://adoc.app.fft.fr/adoc/tableauJourJoueur.do?method=readJoueur')
     .wait('#tableauCourt')
-    //.click('a#fd-but-date')
+    .click('a#date')
     //.click('.cd-20161205')
     .end()
     .then(function (result) {
