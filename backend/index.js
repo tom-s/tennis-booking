@@ -3,7 +3,7 @@ import NightmareFactory from 'nightmare'
 import { LOGIN_URL, USERNAME, PWD, PLAYERS, SOCKET_PORT } from '../../config'
 
 /* Run casper scraper */
-const runBooking = (data, cb) => {
+async function runBooking(data, cb) {
   const nightmare = NightmareFactory({ 
     show: true,
     typeInterval: 20 
@@ -35,15 +35,30 @@ const runBooking = (data, cb) => {
     //.click('.dialog input[name=buttonRechercher]') only when in prod !
     //.wait('#fsdf')
     .end()
-    .then(() => { cb(null, data )})
-    .catch((e) => { cb(e) })
+}
+
+async function scheduleJob(data) {
+
 }
 
 const server = dnode({
   book : (data, cb) => {
     console.log("try booking", data)
-    runBooking(data, cb)
+    try { 
+      await runBooking(data)
+      cb(null, data)
+    } catch(e) {
+      console.log("servor caught error", e)
+      cb(e, data)
+    }
   }
 })
 
+
+/** INIT  **/
+// Retrieve persistant jobs
+
+// Add them to the list 
+
+// Run server
 server.listen(SOCKET_PORT)

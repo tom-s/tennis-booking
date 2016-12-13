@@ -4,8 +4,8 @@
   "description": "Tennis booker for tom-s",
   "main": "lib/index.js",
   "scripts": {
-    "start": "./node_modules/babel-cli/bin/babel.js src --presets babel-preset-es2015 --out-dir dist && node dist/index.js",
-    "start-backend": "./node_modules/babel-cli/bin/babel.js backend --presets babel-preset-es2015 --out-dir dist/backend && node dist/backend/index.js",
+    "start": "./node_modules/babel-cli/bin/babel.js src --out-dir dist && node dist/index.js",
+    "start-backend": "./node_modules/babel-cli/bin/babel.js backend --out-dir dist/backend && node dist/backend/index.js",
     "watch": "",
     "build": "babel lib -d dist",
     "serve": "node dist/index.js",
@@ -15,9 +15,9 @@
   "license": "ISC",
   "devDependencies": {
     "babel-cli": "^6.11.4",
+    "babel-plugin-transform-async-to-generator": "^6.16.0",
     "babel-plugin-transform-object-rest-spread": "^6.20.2",
     "babel-preset-es2015": "^6.9.0",
-    "babel-preset-stage-2": "^6.11.0",
     "babel-register": "^6.11.6",
     "mocha": "^3.0.1",
     "nodemon": "^1.11.0"
