@@ -5,6 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "start": "./node_modules/babel-cli/bin/babel.js src --presets babel-preset-es2015 --out-dir dist && node dist/index.js",
+    "start-backend": "./node_modules/babel-cli/bin/babel.js backend --presets babel-preset-es2015 --out-dir dist/backend && node dist/backend/index.js",
     "watch": "",
     "build": "babel lib -d dist",
     "serve": "node dist/index.js",
@@ -23,6 +24,7 @@
   },
   "dependencies": {
     "async-waterfall": "^0.1.5",
+    "dnode": "^1.2.2",
     "nightmare": "^2.8.1",
     "prompt": "^1.0.0"
   }
