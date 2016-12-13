@@ -1,7 +1,7 @@
 import prompt from 'prompt'
 import NightmareFactory from 'nightmare'
-
-import { LOGIN_URL, USERNAME, PWD } from '../config'
+import waterfall from 'async-waterfall'
+import { LOGIN_URL, USERNAME, PWD, PLAYERS } from '../config'
 
 const pad = (num, size=2) => {
   let s = num +'';
@@ -18,44 +18,75 @@ const extractDate = (dateStr='', separator = '/') => {
    }
 }
 
-// return `${pad(data[0])}${pad(data[1])}${pad(data[2])}`
-
 //
 // Start the prompt
 //
 prompt.start()
 
-//
-// Get two properties from the user: username and email
-//
-prompt.get(['date'], (err, { date }) => {
-  //
-  // Log the results.
-  //
-  console.log('Command-line input received:')
-  console.log('  date: ' + date)
 
-  const dateObj = extractDate(date)
-
-  runBooking(dateObj)
+waterfall([
+  (callback) => {
+    prompt.get(['date'], (err, { date }) => {
+      const dateObj = extractDate(date)
+      callback(null, { ...dateObj})
+    })
+  },
+  (res, callback) => {
+    prompt.get(['time'], (err, { time }) => {
+      const startTime = pad(parseInt(time))
+      callback(null, {
+        ...res,
+        startTime,
+        endTime: pad(parseInt(time) + 1)
+      })
+    })
+  },
+  (res, callback) => {
+    prompt.get(['court'], (err, { court = 1 }) => {
+      callback(null, {
+        ...res,
+        court: parseInt(court)
+      })
+    })
+  },
+], (err, result) => {
+  runBooking(result)
 })
 
 
 
 /* Run casper scraper */
 const runBooking = (date) => {
-  const nightmare = NightmareFactory({ show: true })
+  const nightmare = NightmareFactory({ 
+    show: true,
+    typeInterval: 20 
+  })
   nightmare
     .goto(LOGIN_URL)
     .type('form[name=membreLoginForm] [name=login]', USERNAME)
     .type('form[name=membreLoginForm] [name=password]', PWD)
     .click('form[name=membreLoginForm] input[name=buttonConnecter]')
-    .wait('form[name=membreIdentiteForm]')
+    .wait('a[title="Tableaux par jour"]')
     .click('a[title="Tableaux par jour"]')
-    .wait('#tableauCourt')
+    .wait('a#fd-but-date')
     .click('a#fd-but-date')
     .click(`.cd-${date.year}${date.month}${date.day}`)
-    .wait('#fsdfds')
+    .wait(`div[title*="${date.startTime}h00 à"]`)
+    .click(`#scrollDonneesTableau>div .colonneCourtJour:nth-child(${date.court}) div[title*="${date.startTime}h00 à"]`)
+    .wait('form#reservationPonctuelleJoueurForm')
+    .evaluate(() => {
+      // Make hidden inputs visible so that we can modify their values
+      document.querySelector('#identifiantMembreDeux_value').type = 'text'
+      document.querySelector('#nomMembre2_value').type = 'text'
+      return true
+    })
+    .insert('#identifiantMembreDeux_value', PLAYERS.HESTER.id)
+    .insert('#nomMembre2_value', PLAYERS.HESTER.name)
+    .insert('#identifiantMembreDeux', PLAYERS.HESTER.name)
+    .click('input[name=buttonRechercher]')
+    .wait('.dialog input[name=buttonRechercher]')
+    //.click('.dialog input[name=buttonRechercher]') only when in prod !
+    //.wait('#fsdf')
     .end()
     .then(function (result) {
       console.log("Booking done !", result)
