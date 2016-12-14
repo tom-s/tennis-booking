@@ -50,10 +50,10 @@ async function scheduleJob(data) {
     console.log("servor caught error", e)
     cb(e, data)
   }
- }
 
 const server = dnode({
   book
+  }
 })
 
 

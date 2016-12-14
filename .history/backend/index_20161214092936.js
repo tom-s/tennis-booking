@@ -41,19 +41,17 @@ async function scheduleJob(data) {
 
 }
 
- async function book(data, cb) {
-  console.log("try booking", data)
-  try {
-    await runBooking(data)
-    cb(null, data)
-  } catch(e) {
-    console.log("servor caught error", e)
-    cb(e, data)
-  }
- }
-
 const server = dnode({
-  book
+  book : async function(data, cb) {
+    console.log("try booking", data)
+    try {
+      await runBooking(data)
+      cb(null, data)
+    } catch(e) {
+      console.log("servor caught error", e)
+      cb(e, data)
+    }
+  }
 })
 
 
