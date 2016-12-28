@@ -9,19 +9,22 @@ import mailgun from 'mailgun-js'
 const mailer = mailgun(MAILGUN)
 
 const sendEmail = ({subject='test email', text='test email', to='thom.schell@gmail.com'}) => {
-  const message = {
-    from: 'donotrespond@thomster.ddns.net',
-    to,
-    subject,
-    text
-  }
-  mailer.messages().send(message, (error, body) => {
-    if (err) {
-      console.log('Error: ' + error)
+  return new Promise((resolve, reject) => {
+    resolve()
+    /*
+    const message = {
+      from: 'tennis-booking@thomster.ddns.net',
+      to,
+      subject,
+      text
     }
-    else {
-      console.log('Response: ' + body)
-    }
+    mailer.messages().send(message, (error, body) => {
+      if (err) {
+        reject()
+      } else {
+        resolve()
+      }
+    })*/
   })
 }
 
@@ -74,8 +77,18 @@ async function scheduleJob(data) {
 async function book(data, cb) {
   try {
     await runBooking(data)
+    await sendEmail({
+      subject: 'Booking done !',
+      text: 'Booking done !'
+    })
+    // Let frontend now it worked
     cb(null, data)
   } catch(e) {
+    await sendEmail({
+      subject: 'Booking failed :-(',
+      text: 'Booking could not be done'
+    })
+    // Let frontend know there was a fuck up
     cb(e, data)
   }
  }
