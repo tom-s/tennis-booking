@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "start": "npm run build:front && node dist/index.js",
-    "start:backend": "pm2 stop tennis:backend -s && npm run build:backend && pm2 start dist/backend/index.js --name tennis:backend --watch",
+    "start:backend": "pm2 stop tennis:backend -s && npm run build:backend && pm2 start dist/backend/index.js --name tennis:backend",
     "build:front": "babel src --out-dir dist",
     "build:backend": "babel backend --out-dir dist/backend",
     "build": "npm run build:backend && npm run build:front",
@@ -25,6 +25,7 @@
   "dependencies": {
     "dnode": "^1.2.2",
     "nightmare": "^2.8.1",
-    "prompt-promise": "^1.0.3"
+    "prompt-promise": "^1.0.3",
+    "mailgun-js": "^0.7.15"
   }
 }

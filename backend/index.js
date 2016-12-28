@@ -1,9 +1,32 @@
 import dnode from 'dnode'
 import NightmareFactory from 'nightmare'
-import { LOGIN_URL, USERNAME, PWD, PLAYERS, SOCKET_PORT } from '../../config'
+import { LOGIN_URL, USERNAME, PWD, PLAYERS, SOCKET_PORT, MAILGUN } from '../../config'
+import nodemailer from 'nodemailer'
+import mg from 'nodemailer-mailgun-transport'
+import mailgun from 'mailgun-js'
+
+// Set up emails
+const mailer = mailgun(MAILGUN)
+
+const sendEmail = ({subject='test email', text='test email', to='thom.schell@gmail.com'}) => {
+  const message = {
+    from: 'donotrespond@thomster.ddns.net',
+    to,
+    subject,
+    text
+  }
+  mailer.messages().send(message, (error, body) => {
+    if (err) {
+      console.log('Error: ' + error)
+    }
+    else {
+      console.log('Response: ' + body)
+    }
+  })
+}
 
 /* Run casper scraper */
-async function runBooking(data, cb) {
+const runBooking = (data, cb) => {
   return new Promise((resolve, reject) => {
     const nightmare = NightmareFactory({
       show: true,
