@@ -48,14 +48,11 @@ async function scheduleJob(data) {
 
 }
 
- async function book(data, cb) {
-  console.log("try booking", data)
+async function book(data, cb) {
   try {
     await runBooking(data)
-    console.log("booking worked !")
     cb(null, data)
   } catch(e) {
-    console.log("servor caught error", e)
     cb(e, data)
   }
  }

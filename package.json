@@ -4,7 +4,7 @@
   "description": "Tennis booker for tom-s",
   "main": "lib/index.js",
   "scripts": {
-    "start:front": "npm run build:front && node dist/index.js",
+    "start": "npm run build:front && node dist/index.js",
     "start:backend": "pm2 stop tennis:backend -s && npm run build:backend && pm2 start dist/backend/index.js --name tennis:backend --watch",
     "build:front": "babel src --out-dir dist",
     "build:backend": "babel backend --out-dir dist/backend",
@@ -23,9 +23,8 @@
     "mocha": "^3.0.1"
   },
   "dependencies": {
-    "async-waterfall": "^0.1.5",
     "dnode": "^1.2.2",
     "nightmare": "^2.8.1",
-    "prompt": "^1.0.0"
+    "prompt-promise": "^1.0.3"
   }
 }
