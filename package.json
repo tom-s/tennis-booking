@@ -4,23 +4,23 @@
   "description": "Tennis booker for tom-s",
   "main": "lib/index.js",
   "scripts": {
-    "start": "babel src --out-dir dist && node dist/index.js",
-    "start-backend": "babel backend --out-dir dist/backend && node dist/backend/index.js",
-    "watch": "",
-    "build": "babel lib -d dist",
-    "serve": "node dist/index.js",
-    "test": "mocha --compilers js:babel-register"
+    "start:front": "npm run build:front && node dist/index.js",
+    "start:backend": "pm2 stop tennis:backend -s && npm run build:backend && pm2 start dist/backend/index.js --name tennis:backend --watch",
+    "build:front": "babel src --out-dir dist",
+    "build:backend": "babel backend --out-dir dist/backend",
+    "build": "npm run build:backend && npm run build:front",
+    "test": "mocha --compilers js:babel-register",
+    "prepublish": ""
   },
   "author": "James Kyle <me@thejameskyle.com>",
   "license": "ISC",
   "devDependencies": {
     "babel-cli": "^6.18.0",
-    "babel-plugin-transform-async-to-generator": "^6.16.0",
     "babel-plugin-transform-object-rest-spread": "^6.20.2",
-    "babel-preset-es2017": "^6.16.0",
+    "babel-plugin-transform-runtime": "^6.15.0",
+    "babel-preset-latest": "^6.16.0",
     "babel-register": "^6.11.6",
-    "mocha": "^3.0.1",
-    "nodemon": "^1.11.0"
+    "mocha": "^3.0.1"
   },
   "dependencies": {
     "async-waterfall": "^0.1.5",

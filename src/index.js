@@ -1,3 +1,5 @@
+'use strict';
+
 import prompt from 'prompt'
 import waterfall from 'async-waterfall'
 import { SOCKET_PORT } from '../config'
