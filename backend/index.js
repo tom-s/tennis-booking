@@ -1,9 +1,11 @@
 import dnode from 'dnode'
 import NightmareFactory from 'nightmare'
-import { LOGIN_URL, USERNAME, PWD, PLAYERS, SOCKET_PORT, MAILGUN } from '../../config'
-import nodemailer from 'nodemailer'
-import mg from 'nodemailer-mailgun-transport'
+import { LOGIN_URL, USERNAME, PWD, PLAYERS, SOCKET_PORT, MAILGUN, DB_PATH } from '../../config'
 import mailgun from 'mailgun-js'
+import dbFactory from 'json-fs-store'
+
+// Set up db 
+const db = dbFactory(DB_PATH)
 
 // Set up emails
 const mailer = mailgun(MAILGUN)
@@ -28,7 +30,7 @@ const sendEmail = ({subject='test email', text='test email', to='thom.schell@gma
   })
 }
 
-/* Run casper scraper */
+/* Run nightmare scraper */
 const runBooking = (data, cb) => {
   return new Promise((resolve, reject) => {
     const nightmare = NightmareFactory({

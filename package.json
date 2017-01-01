@@ -1,14 +1,14 @@
 {
   "name": "tennisBooking",
   "version": "0.0.1",
-  "description": "Tennis booker for tom-s",
+  "description": "Tennis booker",
   "main": "lib/index.js",
   "scripts": {
     "start": "npm run build:front && node dist/index.js",
-    "start:backend": "pm2 stop tennis:backend -s && npm run build:backend && pm2 start dist/backend/index.js --name tennis:backend",
+    "start:backend": "pm2 stop tennis:backend -s & npm run build:backend && pm2 start dist/backend/index.js --name tennis:backend",
+    "build": "npm run build:backend && npm run build:front",
     "build:front": "babel src --out-dir dist",
     "build:backend": "babel backend --out-dir dist/backend",
-    "build": "npm run build:backend && npm run build:front",
     "test": "mocha --compilers js:babel-register",
     "prepublish": ""
   },
@@ -24,8 +24,9 @@
   },
   "dependencies": {
     "dnode": "^1.2.2",
+    "json-fs-store": "^1.0.1",
+    "mailgun-js": "^0.7.15",
     "nightmare": "^2.8.1",
-    "prompt-promise": "^1.0.3",
-    "mailgun-js": "^0.7.15"
+    "prompt-promise": "^1.0.3"
   }
 }
