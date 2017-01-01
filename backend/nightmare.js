@@ -34,7 +34,7 @@ export const runBooking = (data, cb) => {
       //.click('.dialog input[name=buttonRechercher]') only when in prod !
       .end()
       .then(() => {
-        resolve()
+        resolve(true)
       })
       .catch((error) => {
         reject(error)

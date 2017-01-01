@@ -5,31 +5,55 @@ import { runBooking } from './nightmare'
 import { getTimeDifference } from './sync'
 import { scheduleJob } from './scheduler'
 
-const planBooking = (date, data) => {
+const EMAIL_TEMPLATES = {
+  SUCCESS: {
+    BOOKING_PLANNED: {
+      subject: 'Booking planned',
+      text: 'I will not fail you!'
+    },
+    BOOKING_DONE: {
+      subject: 'Booking done',
+      text: 'I have not failed you, its tennis time!'
+    }
+  },  
+  ERROR: {
+    subject: 'Booking error',
+    text: 'I have failed you!'
+  }
+}
+const planBooking = ({date, data}) => {
 
 }
 
 const canBookNow = (date) => {
-  
+  const now = new Date()
+  const isWeekend = (date.getDay() == 6) || (date.getDay() == 0)
+  const hoursDifference = (date.getTime() - now.getTime()) / 3600000
+
+  return isWeekend
+    ? hoursDifference <= 6
+    : hoursDifference <= 48
 }
 
 async function book(data, cb) {
-  console.log("book", data, cb)
-  const { startTime, dateObj: { day, month, year }} = data
-  const date =  new Date(year, month-1, day, startTime) // month start at 0
-  const action = canBookNow(data)
-    ? book(data)
-    : planBooking(date, data)
-
-  /*
   try {
-    await runBooking(data)
-    await sendEmail({
-      subject: 'Booking done !',
-      text: 'Booking done !'
-    })
-    // Let frontend now it worked
-    cb(null, data)
+    const { startTime, dateObj: { day, month, year }} = data
+    const date =  new Date(year, month-1, day, startTime) // month start at 0
+    const isBookable = canBookNow(date)
+  
+    const success = (isBookable)
+      ? await runBooking({data})
+      : await planBooking({date, data})
+ 
+    const templateEmail = success 
+      ? (isBookable ? EMAIL_TEMPLATES['SUCCESS']['BOOKING_DONE'] : EMAIL_TEMPLATES['SUCCESS']['BOOKING_PLANNED'])
+      : EMAIL_TEMPLATES['ERROR']
+
+    await sendEmail(templateEmail)   
+
+     // Let frontend now it worked
+    cb(null, data) 
+
   } catch(e) {
     await sendEmail({
       subject: 'Booking failed :-(',
@@ -37,7 +61,7 @@ async function book(data, cb) {
     })
     // Let frontend know there was a fuck up
     cb(e, data)
-  }*/
+  }
  }
 
 
