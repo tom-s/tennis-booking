@@ -1,16 +1,5 @@
 {
   "id": "jobs",
   "items": [
-    {
-      "dateObj": {
-        "day": "05",
-        "month": "01",
-        "year": "2017"
-      },
-      "startTime": "12",
-      "endTime": "13",
-      "court": 1,
-      "executionTime": 1483441200000
-    }
   ]
 }

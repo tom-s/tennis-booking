@@ -3,21 +3,30 @@ import { LOGIN_URL, USERNAME, PWD, PLAYERS } from '../../config'
 
 /* Run nightmare scraper */
 export const runBooking = ({dateObj:date, startTime, endTime, court}) => {
+  const dateStr = date.day + '/' + date.month + '/' + date.year
   return new Promise((resolve, reject) => {
     const nightmare = NightmareFactory({
       show: true,
-      typeInterval: 20
+      typeInterval: 20,
+      pollInterval: 50, //in ms
+      debug: true,
+      openDevTools: {
+        mode: 'detach'
+      }
     })
     nightmare
       .goto(LOGIN_URL)
       .type('form[name=membreLoginForm] [name=login]', USERNAME)
       .type('form[name=membreLoginForm] [name=password]', PWD)
       .click('form[name=membreLoginForm] input[name=buttonConnecter]')
-      .wait('.choixClub')
+      .wait('a[title="Tableaux par jour"]')
       .click('a[title="Tableaux par jour"]')
       .wait('a#fd-but-date')
-      .click('a#fd-but-date')
-      .click(`.cd-${date.year}${date.month}${date.day}`)
+      .evaluate((dateStr) => {
+        window.moveToThisDate(document.tableauJourForm, $('date'), dateStr)
+        return true
+      }, dateStr)
+      .wait(500) // just in case
       .wait(`div[title*="${startTime}h00 à"]`)
       .click(`#scrollDonneesTableau>div .colonneCourtJour:nth-child(${court}) div[title*="${startTime}h00 à"]`)
       .wait('form#reservationPonctuelleJoueurForm')
@@ -38,6 +47,7 @@ export const runBooking = ({dateObj:date, startTime, endTime, court}) => {
         resolve(true)
       })
       .catch((error) => {
+        console.log("error", error)
         reject(error)
       })
   })

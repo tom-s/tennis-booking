@@ -47,7 +47,7 @@ async function promptUser() {
       if(err) {
         console.log("an error occured:", err)
       } else {
-        console.log("booking done")
+        console.log("done")
       }
     })
   } catch(e) {

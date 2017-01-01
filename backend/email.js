@@ -24,6 +24,7 @@ export const EMAIL_TEMPLATES = {
 
 export const sendEmail = ({subject='test email', text='test email', to='thom.schell@gmail.com', cc='hester.borren@gmail.com'}) => {
   return new Promise((resolve, reject) => {
+    resolve()
     const message = {
       from: 'tennis-booking@thomster.ddns.net',
       to,
