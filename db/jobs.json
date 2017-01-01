@@ -1,3 +1,15 @@
 {
-  
+  "id": "jobs",
+  "items": {
+    "1483876800000": {
+      "dateObj": {
+        "day": "10",
+        "month": "01",
+        "year": "2017"
+      },
+      "startTime": "13",
+      "endTime": "14",
+      "court": 1
+    }
+  }
 }

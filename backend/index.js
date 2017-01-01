@@ -6,6 +6,8 @@ import { getTimeDifference } from './sync'
 import { scheduleJob } from './scheduler'
 import { sendEmail } from './email'
 
+const MS_PER_HOUR = 3600000
+
 const EMAIL_TEMPLATES = {
   SUCCESS: {
     BOOKING_PLANNED: {
@@ -23,21 +25,28 @@ const EMAIL_TEMPLATES = {
   }
 }
 
-const planBooking = (data, date) => {
+async function planBooking(data, date) {
+  const jobs = await dbGet('jobs')
+  const isWeekend = (date.getDay() == 6) || (date.getDay() == 0)
+  const jobTime = isWeekend
+    ? date.getTime() - MS_PER_HOUR * 6
+    : date.getTime() - MS_PER_HOUR * 48
 
+  jobs.items[jobTime] = data
+  return dbUpdate(jobs)
 }
 
 const canBookNow = (date) => {
   const now = new Date()
   const isWeekend = (date.getDay() == 6) || (date.getDay() == 0)
-  const hoursDifference = (date.getTime() - now.getTime()) / 3600000
+  const hoursDifference = (date.getTime() - now.getTime()) / MS_PER_HOUR
 
   return isWeekend
     ? hoursDifference <= 6
     : hoursDifference <= 48
 }
 
-async function book(data, cb) {
+async function book(data, cb = () => {}) {
   try {
     const { startTime, dateObj: { day, month, year }} = data
     const date =  new Date(year, month-1, day, startTime) // month start at 0
@@ -57,6 +66,7 @@ async function book(data, cb) {
     cb(null, data) 
 
   } catch(e) {
+    console.log("error occured", e)
     await sendEmail(EMAIL_TEMPLATES['ERROR'])
     // Let frontend know there was a fuck up
     cb(e, data)
@@ -79,8 +89,11 @@ async function init() {
     console.log("JOBS", jobs)
 
     // Schedule jobs
-    Object.keys(jobs).forEach(timestamp => {
-      scheduleJob(timstamp, jobs[timestamp])
+    Object.keys(jobs.items).forEach(timestamp => {
+      scheduleJob(timstamp, jobs[timestamp], (job) => {
+        console.log("run scheduled job", job)
+        book(job)
+      })
     })
 
     // Run server

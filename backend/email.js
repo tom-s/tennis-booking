@@ -6,8 +6,6 @@ const mailer = mailgun(MAILGUN)
 
 export const sendEmail = ({subject='test email', text='test email', to='thom.schell@gmail.com'}) => {
   return new Promise((resolve, reject) => {
-    resolve()
-    /*
     const message = {
       from: 'tennis-booking@thomster.ddns.net',
       to,
@@ -15,11 +13,11 @@ export const sendEmail = ({subject='test email', text='test email', to='thom.sch
       text
     }
     mailer.messages().send(message, (error, body) => {
-      if (err) {
-        reject()
+      if (error) {
+        reject(error)
       } else {
         resolve()
       }
-    })*/
+    })
   })
 }

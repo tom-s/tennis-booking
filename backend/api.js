@@ -18,11 +18,11 @@ export const dbGet = (key) => {
 
 export const dbUpdate = (obj) => {
   return new Promise((resolve, reject) => {
-    db.add(obj, (err, jobs) => {
+    db.add(obj, (err) => {
        if (err) {
          reject(err)
        } else {
-         resolve(jobs)
+         resolve(obj)
        }
     })
   })
