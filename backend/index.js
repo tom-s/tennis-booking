@@ -5,7 +5,23 @@ import { runBooking } from './nightmare'
 import { getTimeDifference } from './sync'
 import { scheduleJob } from './scheduler'
 
+const planBooking = (date, data) => {
+
+}
+
+const canBookNow = (date) => {
+  
+}
+
 async function book(data, cb) {
+  console.log("book", data, cb)
+  const { startTime, dateObj: { day, month, year }} = data
+  const date =  new Date(year, month-1, day, startTime) // month start at 0
+  const action = canBookNow(data)
+    ? book(data)
+    : planBooking(date, data)
+
+  /*
   try {
     await runBooking(data)
     await sendEmail({
@@ -21,10 +37,8 @@ async function book(data, cb) {
     })
     // Let frontend know there was a fuck up
     cb(e, data)
-  }
+  }*/
  }
-
-
 
 
 /** INIT  **/
