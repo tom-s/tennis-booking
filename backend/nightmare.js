@@ -13,7 +13,7 @@ export const runBooking = ({dateObj:date, startTime, endTime, court}) => {
       .type('form[name=membreLoginForm] [name=login]', USERNAME)
       .type('form[name=membreLoginForm] [name=password]', PWD)
       .click('form[name=membreLoginForm] input[name=buttonConnecter]')
-      .wait('a[title="Tableaux par jour"]')
+      .wait('.choixClub')
       .click('a[title="Tableaux par jour"]')
       .wait('a#fd-but-date')
       .click('a#fd-but-date')

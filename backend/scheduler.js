@@ -1,8 +1,10 @@
 import scheduler from 'node-schedule'
 
-export const scheduleJob = (timestamp, job, cb) => {
-  const date = new Date(timestamp)
-  scheduler.scheduleJob(date, () => {
-    cb(job)
+export const scheduleJob = (timestamp, job) => {
+  return new Promise((resolve, reject) => {
+    const date = new Date(timestamp)
+    scheduler.scheduleJob(date, () => {
+      resolve(job)
+    })
   })
 }
