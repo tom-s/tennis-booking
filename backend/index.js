@@ -1,9 +1,10 @@
 import dnode from 'dnode'
-import { LOGIN_URL, USERNAME, PWD, PLAYERS, SOCKET_PORT } from '../../config'
+import { LOGIN_URL, SOCKET_PORT } from '../../config'
 import { dbGet, dbUpdate } from './api'
 import { runBooking } from './nightmare'
 import { getTimeDifference } from './sync'
 import { scheduleJob } from './scheduler'
+import { sendEmail } from './email'
 
 const EMAIL_TEMPLATES = {
   SUCCESS: {
@@ -21,7 +22,8 @@ const EMAIL_TEMPLATES = {
     text: 'I have failed you!'
   }
 }
-const planBooking = ({date, data}) => {
+
+const planBooking = (data, date) => {
 
 }
 
@@ -42,8 +44,8 @@ async function book(data, cb) {
     const isBookable = canBookNow(date)
   
     const success = (isBookable)
-      ? await runBooking({data})
-      : await planBooking({date, data})
+      ? await runBooking(data)
+      : await planBooking(data, date)
  
     const templateEmail = success 
       ? (isBookable ? EMAIL_TEMPLATES['SUCCESS']['BOOKING_DONE'] : EMAIL_TEMPLATES['SUCCESS']['BOOKING_PLANNED'])
@@ -55,10 +57,7 @@ async function book(data, cb) {
     cb(null, data) 
 
   } catch(e) {
-    await sendEmail({
-      subject: 'Booking failed :-(',
-      text: 'Booking could not be done'
-    })
+    await sendEmail(EMAIL_TEMPLATES['ERROR'])
     // Let frontend know there was a fuck up
     cb(e, data)
   }
@@ -69,7 +68,7 @@ async function book(data, cb) {
 async function init() {
   try {
     const server = dnode({
-      book
+      book // expose  book function to frontend
     })
 
     //const timeDifference = await getTimeDifference()

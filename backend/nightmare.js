@@ -1,7 +1,8 @@
 import NightmareFactory from 'nightmare'
+import { LOGIN_URL, USERNAME, PWD, PLAYERS } from '../../config'
 
 /* Run nightmare scraper */
-export const runBooking = (data, cb) => {
+export const runBooking = ({dateObj:date, startTime, endTime, court}) => {
   return new Promise((resolve, reject) => {
     const nightmare = NightmareFactory({
       show: true,
@@ -16,9 +17,9 @@ export const runBooking = (data, cb) => {
       .click('a[title="Tableaux par jour"]')
       .wait('a#fd-but-date')
       .click('a#fd-but-date')
-      .click(`.cd-${data.year}${data.month}${data.day}`)
-      .wait(`div[title*="${data.startTime}h00 à"]`)
-      .click(`#scrollDonneesTableau>div .colonneCourtJour:nth-child(${data.court}) div[title*="${data.startTime}h00 à"]`)
+      .click(`.cd-${date.year}${date.month}${date.day}`)
+      .wait(`div[title*="${startTime}h00 à"]`)
+      .click(`#scrollDonneesTableau>div .colonneCourtJour:nth-child(${court}) div[title*="${startTime}h00 à"]`)
       .wait('form#reservationPonctuelleJoueurForm')
       .evaluate(() => {
         // Make hidden inputs visible so that we can modify their values
