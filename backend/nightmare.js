@@ -37,7 +37,7 @@ export const runBooking = ({dateObj:date, startTime, endTime, court}) => {
       .insert('#identifiantMembreDeux', PLAYERS.HESTER.name)
       .click('input[name=buttonRechercher]')
       .wait('.dialog input[name=buttonRechercher]')
-      //.click('.dialog input[name=buttonRechercher]') only when in prod !
+      .click('.dialog input[name=buttonRechercher]')
       .end()
       .then(() => {
         resolve(true)

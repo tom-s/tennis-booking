@@ -8,9 +8,7 @@ export const getTimeDifference = (key) => {
         reject(response)
       } else {
         const serverTimestamp = new Date(response.headers.get('Date')).getTime()
-        console.log("server", serverTimestamp)
         const localTimestamp = new Date().getTime()
-        console.log("local", localTimestamp)
         resolve(localTimestamp - serverTimestamp)
       }
     }).catch(err => {  
