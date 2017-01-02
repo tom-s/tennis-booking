@@ -46,12 +46,15 @@ async function promptUser() {
     remote.book(booking, (err, res) => {
       if(err) {
         console.log("an error occured:", err)
+        process.exit(1)
       } else {
         console.log("done")
+        process.exit()
       }
     })
   } catch(e) {
     console.log("an error occured: ", e)
+    process.exit(1)
   }
 }
 

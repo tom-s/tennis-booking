@@ -6,13 +6,9 @@ export const runBooking = ({dateObj:date, startTime, endTime, court}) => {
   const dateStr = date.day + '/' + date.month + '/' + date.year
   return new Promise((resolve, reject) => {
     const nightmare = NightmareFactory({
-      show: true,
+      show: false,
       typeInterval: 20,
-      pollInterval: 50, //in ms
-      debug: true,
-      openDevTools: {
-        mode: 'detach'
-      }
+      pollInterval: 50 //in ms
     })
     nightmare
       .goto(LOGIN_URL)
