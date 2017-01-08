@@ -56,6 +56,7 @@ async function init() {
           ? await doBooking(data)
           : await scheduleBooking(data, date)
         cb(null)
+        init() // restart so that scheduled job is queued
       } // expose  book function to frontend
     })
 
