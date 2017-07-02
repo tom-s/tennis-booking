@@ -4,6 +4,12 @@ import prompt from 'prompt-promise'
 import { SOCKET_PORT } from '../config'
 import dnode from 'dnode'
 
+const getTomorrowAsString = () => {
+  const tomorrow = new Date()
+  tomorrow.setDate(tomorrow.getDate() + 1)
+  return `${pad(tomorrow.getDate())}/${pad(tomorrow.getMonth() + 1)}/${tomorrow.getFullYear()}`
+
+}
 const pad = (num, size=2) => {
   let s = num +'';
   while (s.length < size) s = '0' + s
@@ -29,7 +35,7 @@ async function connect() {
 
 async function promptUser() {
   try {
-    const date = await prompt('Date of the booking (ex: 06/01/2017) -> ')
+    const date = await prompt(`Date of the booking (ex tomorrow: ${getTomorrowAsString()}) -> `)
     const time = await prompt('Time of the booking (ex: 13 for 1PM) -> ')
     const court = await prompt('Court of the booking (1 or 2) -> ')
     const remote = await connect()
@@ -41,7 +47,7 @@ async function promptUser() {
       endTime: pad(parseInt(time) + 1),
       court: parseInt(court)
     }
-    
+
     // Do the booking
     remote.book(booking, (err, res) => {
       if(err) {
