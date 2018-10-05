@@ -52,6 +52,7 @@ async function init() {
         const { startTime, dateObj: { day, month, year }} = data
         const date =  new Date(year, month-1, day, startTime) // month start at 0
         const isBookable = canBookNow(date)
+        console.log("debug bookable ?", isBookable)
         const success = (isBookable)
           ? await doBooking(data)
           : await scheduleBooking(data, date)

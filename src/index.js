@@ -1,8 +1,8 @@
 'use strict';
 
 import prompt from 'prompt-promise'
-import { SOCKET_PORT } from '../config'
 import dnode from 'dnode'
+import { SOCKET_PORT } from '../config'
 
 const getTomorrowAsString = () => {
   const tomorrow = new Date()
@@ -27,7 +27,7 @@ const extractDate = (dateStr='', separator = '/') => {
 
 async function connect() {
   return new Promise((resolve, reject) => {
-    dnode.connect(5050, (remote) => {
+    dnode.connect(SOCKET_PORT, (remote) => {
       resolve(remote)
     })
   })

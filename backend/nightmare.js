@@ -1,7 +1,7 @@
 import NightmareFactory from 'nightmare'
 import { LOGIN_URL, USERNAME, PWD, PLAYERS } from '../../config'
 
-const HTTP_WAIT = 1000
+const HTTP_WAIT = 100000 //1000
 
 /* Run nightmare scraper */
 export const runBooking = ({dateObj:date, startTime, endTime, court}) => {
@@ -10,10 +10,16 @@ export const runBooking = ({dateObj:date, startTime, endTime, court}) => {
     ? 21133
     : 21134
 
+  console.log("debug document.tableauJourForm, $('date'), dateStr", {
+    tab: document.tableauJourForm,
+    date: $('date'), 
+    dateStr
+  })
+
   return new Promise((resolve, reject) => {
     const nightmare = NightmareFactory({
-      //show: true,
-      //openDevTools: true,
+      show: true,
+      openDevTools: true,
       typeInterval: 20,
       pollInterval: 50 //in ms
     })
@@ -29,6 +35,7 @@ export const runBooking = ({dateObj:date, startTime, endTime, court}) => {
         window.moveToThisDate(document.tableauJourForm, $('date'), dateStr)
       }, dateStr)
       .wait(HTTP_WAIT) // give some time fot the page to reload -> this is dirty but i haven't found any better
+      /*
       .evaluate((dateStr, startTime,courtId,  done) => {
           // It's a bit dodgy code, but at least it works in electron (no need to be compiled)
           var boxes = document.querySelectorAll('.donnee')
@@ -61,6 +68,7 @@ export const runBooking = ({dateObj:date, startTime, endTime, court}) => {
       .wait('.dialog input[name=buttonRechercher]')
       .click('.dialog input[name=buttonRechercher]')
       .wait(HTTP_WAIT)
+      */
       .end()
       .then(() => {
         resolve(true)
