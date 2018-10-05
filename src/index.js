@@ -35,9 +35,12 @@ async function connect() {
 
 async function promptUser() {
   try {
-    const date = await prompt(`Date of the booking (ex tomorrow: ${getTomorrowAsString()}) -> `)
-    const time = await prompt('Time of the booking (ex: 13 for 1PM) -> ')
-    const court = await prompt('Court of the booking (1 or 2) -> ')
+    const userDate = await prompt(`Date of the booking (ex tomorrow: ${getTomorrowAsString()}) -> `)
+    const date = userDate || getTomorrowAsString()
+    const userTime = await prompt('Time of the booking (ex: 13 for 1PM) -> ')
+    const time = userTime || 13
+    const userCourt = await prompt('Court of the booking (1 or 2) -> ')
+    const court = userCourt || 1
     const remote = await connect()
 
     // Format data
