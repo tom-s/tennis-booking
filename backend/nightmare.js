@@ -12,8 +12,8 @@ export const runBooking = ({dateObj:date, startTime, endTime, court}) => {
 
   return new Promise((resolve, reject) => {
     const nightmare = NightmareFactory({
-      //show: true,
-      //openDevTools: true,
+      show: false, //true,
+      openDevTools: false, //true,
       typeInterval: 20,
       pollInterval: 50 //in ms
     })
