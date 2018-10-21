@@ -12,7 +12,7 @@
     "test": "mocha --compilers js:babel-register",
     "prepublish": ""
   },
-  "author": "James Kyle <me@thejameskyle.com>",
+  "author": "Thomas Schell <thom.schell@gmail.com>",
   "license": "ISC",
   "devDependencies": {
     "babel-cli": "^6.18.0",

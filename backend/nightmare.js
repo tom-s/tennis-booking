@@ -12,8 +12,8 @@ export const runBooking = ({dateObj:date, startTime, endTime, court}) => {
 
   return new Promise((resolve, reject) => {
     const nightmare = NightmareFactory({
-      show: true,
-      openDevTools: true,
+      //show: true,
+      //openDevTools: true,
       typeInterval: 20,
       pollInterval: 50 //in ms
     })
@@ -55,7 +55,7 @@ export const runBooking = ({dateObj:date, startTime, endTime, court}) => {
         return true
       })
       .insert('#identifiantMembreDeux_value', PLAYERS.HESTER.id)
-      .insert('#nomMembre2_value', PLAYERS.HESTER.name)
+      .insert('#nomMembre2_value', PLAYERS.HESTER.value)
       .insert('#identifiantMembreDeux', PLAYERS.HESTER.name)
       .click('input[name=buttonRechercher]')
       .wait('.dialog input[name=buttonRechercher]')
