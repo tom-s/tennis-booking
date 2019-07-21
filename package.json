@@ -15,21 +15,21 @@
   "author": "Thomas Schell <thom.schell@gmail.com>",
   "license": "ISC",
   "devDependencies": {
-    "babel-cli": "^6.18.0",
-    "babel-plugin-transform-object-rest-spread": "^6.20.2",
-    "babel-plugin-transform-runtime": "^6.15.0",
-    "babel-preset-latest": "^6.16.0",
-    "babel-register": "^6.11.6",
-    "mocha": "^3.0.1"
+    "babel-cli": "^6.26.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-latest": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "mocha": "^6.2.0"
   },
   "dependencies": {
-    "babel-eslint": "^7.1.1",
+    "babel-eslint": "^10.0.2",
     "dnode": "^1.2.2",
+    "inquirer": "^6.5.0",
     "json-fs-store": "^1.0.1",
-    "mailgun-js": "^0.7.15",
-    "nightmare": "^2.8.1",
-    "node-fetch": "^1.6.3",
-    "node-schedule": "^1.2.0",
-    "prompt-promise": "^1.0.3"
+    "mailgun-js": "^0.22.0",
+    "nightmare": "^3.0.2",
+    "node-fetch": "^2.6.0",
+    "node-schedule": "^1.3.2"
   }
 }

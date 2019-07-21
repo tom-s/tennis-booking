@@ -3,9 +3,56 @@ import { LOGIN_URL, USERNAME, PWD, PLAYERS } from '../../config'
 
 const HTTP_WAIT = 1000
 
+/* This is a copy of https://github.com/segmentio/nightmare/blob/master/lib/actions.js without the blur stuff */
+var focusSelector = function(done, selector) {
+  return this.evaluate_now(
+    function(selector) {
+      document.querySelector(selector).focus()
+    },
+    done.bind(this),
+    selector
+  )
+}
+
+
+const typeWithoutBlur = function() {
+  var selector = arguments[0],
+    text,
+    done
+  if (arguments.length == 2) {
+    done = arguments[1]
+  } else {
+    text = arguments[1]
+    done = arguments[2]
+  }
+
+  var self = this
+
+  focusSelector.bind(this)(function(err) {
+    if (err) {
+      return done(err)
+    }
+
+    var blurDone = done // no blur
+    if ((text || '') == '') {
+      this.evaluate_now(
+        function(selector) {
+          document.querySelector(selector).value = ''
+        },
+        blurDone,
+        selector
+      )
+    } else {
+      self.child.call('type', text, blurDone)
+    }
+  }, selector)
+}
+
+NightmareFactory.action('typeWithoutBlur', typeWithoutBlur)
+
 /* Run nightmare scraper */
-export const runBooking = ({dateObj:date, startTime, endTime, court}) => {
-  const dateStr = date.day + '/' + date.month + '/' + date.year
+export const runBooking = ({dateObj:date, startTime, endTime, court, opponent}) => {
+  const dateStr = `${date.year}${date.month}${date.day}`
   const courtId = court == 1
     ? 21133
     : 21134
@@ -13,55 +60,30 @@ export const runBooking = ({dateObj:date, startTime, endTime, court}) => {
   return new Promise((resolve, reject) => {
     const nightmare = NightmareFactory({
       show: false, //true,
-      openDevTools: false, //true,
+      //show: true,
+      openDevTools: false,
+      //openDevTools: true,
       typeInterval: 20,
       pollInterval: 50 //in ms
     })
     nightmare
       .goto(LOGIN_URL)
-      .type('form[name=membreLoginForm] [name=login]', USERNAME)
-      .type('form[name=membreLoginForm] [name=password]', PWD)
-      .click('form[name=membreLoginForm] input[name=buttonConnecter]')
-      .wait('a[title="Tableaux par jour"]')
-      .click('a[title="Tableaux par jour"]')
-      .wait('a#fd-but-date')
-      .evaluate((dateStr) => {
-        window.moveToThisDate(document.tableauJourForm, $('date'), dateStr)
-      }, dateStr)
-      .wait(HTTP_WAIT) // give some time fot the page to reload -> this is dirty but i haven't found any better
-      .evaluate((dateStr, startTime,courtId,  done) => {
-          // It's a bit dodgy code, but at least it works in electron (no need to be compiled)
-          var boxes = document.querySelectorAll('.donnee')
-          let ids = []
-          for (var i = 0; i < boxes.length; i++) {
-            var box = boxes[i]
-            var boxId  = box.getAttribute('id')
-            if(boxId) {
-              ids = ids.filter(id => id !== boxId)
-              ids.push(boxId)
-            }
-          }
-          var id = ids.find(id => id.indexOf(courtId) !== -1 && id.indexOf('null') === -1)
-          var idCreneau = parseInt(id.split('_')[0].replace('creneau', ''), 10)
-          window.ajoutReservation(idCreneau,`${startTime}:00`, dateStr)
-          done(null, idCreneau)
-      }, dateStr, startTime,courtId)
-      .evaluate(() => {
-        // Make hidden inputs visible so that we can modify their values
-        document.querySelector('#identifiantCreneau').type = 'text'
-        document.querySelector('#date').type = 'text'
-        document.querySelector('#identifiantMembreDeux_value').type = 'text'
-        document.querySelector('#nomMembre2_value').type = 'text'
-        return true
-      })
-      .insert('#identifiantMembreDeux_value', PLAYERS.HESTER.id)
-      .insert('#nomMembre2_value', PLAYERS.HESTER.value)
-      .insert('#identifiantMembreDeux', PLAYERS.HESTER.name)
-      .click('input[name=buttonRechercher]')
-      .wait('.dialog input[name=buttonRechercher]')
-      .click('.dialog input[name=buttonRechercher]')
-      .wait(HTTP_WAIT)
-      .end()
+      .wait('.userlogin')
+      .click('.userlogin > a')
+      .wait('#edit-name')
+      .type('#edit-name', USERNAME)
+      .type('#edit-pass', PWD)
+      .click('#edit-submit')
+      .wait('.nomPrenom')
+      .goto(`${LOGIN_URL}/adherent/reservations/${dateStr}`)
+      .wait('.adherent-reservation-calendrier-row')
+      .click(`[id='${courtId}_${startTime}00'] > a`)
+      .wait("#autocomplete-deluxe-input")
+      .typeWithoutBlur("#autocomplete-deluxe-input", opponent.name) // we cannot use type as it blurs the input after typing
+      .wait("#ui-id-3 .ui-corner-all")
+      .click("#ui-id-3 .ui-corner-all")
+      .wait("#edit-submit")
+      .click("#edit-submit")
       .then(() => {
         resolve(true)
       })

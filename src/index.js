@@ -1,8 +1,8 @@
 'use strict';
 
-import prompt from 'prompt-promise'
+import inquirer from 'inquirer'
 import dnode from 'dnode'
-import { SOCKET_PORT } from '../config'
+import { SOCKET_PORT, PLAYERS } from '../config'
 
 const getTomorrowAsString = () => {
   const tomorrow = new Date()
@@ -33,22 +33,24 @@ async function connect() {
   })
 }
 
+const QUESTIONS = [
+  { type: 'input', name: 'date', message: `Date of the booking (ex tomorrow: ${getTomorrowAsString()})`, default: getTomorrowAsString() },
+  { type: 'input', name: 'time', message: `Time of the booking (ex: 20 for 8PM)`, default: 20 },
+  { type: 'list', name: 'opponent', message: `Opponent`, choices: PLAYERS.map(player => player.id), default: PLAYERS.find(player => player.id === 'Antoine') },
+  { type: 'list', name: 'court', message: `Court of the booking (1 or 2)`, choices: ['1', '2'], default: 0 },
+]
+
 async function promptUser() {
   try {
-    const userDate = await prompt(`Date of the booking (ex tomorrow: ${getTomorrowAsString()}) -> `)
-    const date = userDate || getTomorrowAsString()
-    const userTime = await prompt('Time of the booking (ex: 13 for 1PM) -> ')
-    const time = userTime || 13
-    const userCourt = await prompt('Court of the booking (1 or 2) -> ')
-    const court = userCourt || 1
+    const { date, time, court, opponent } = await inquirer.prompt(QUESTIONS)
     const remote = await connect()
-
     // Format data
     const booking = {
       dateObj: extractDate(date),
       startTime:  pad(parseInt(time)),
       endTime: pad(parseInt(time) + 1),
-      court: parseInt(court)
+      court: parseInt(court),
+      opponent: PLAYERS.find(player => player.id === opponent)
     }
 
     // Do the booking

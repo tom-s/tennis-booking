@@ -8,24 +8,24 @@ const mailer = mailgun(MAILGUN)
 export const EMAIL_TEMPLATES = {
   SUCCESS: {
     BOOKING_PLANNED: {
-      subject: 'Booking planned for %date on court %court',
-      text: 'The scheduled job will run on %executionDate, I will not fail you.'
+      subject: 'Réservation planifiée pour le %date sur le court %court',
+      text: 'Le job de réservation sera exécuté le %executionDate, patience !'
     },
     BOOKING_DONE: {
-      subject: 'Booking done for %date on court %court',
-      text: "I have not failed you, it's tennis time..."
+      subject: 'Réservée effectuée pour le %date sur le court %court',
+      text: "Réservation effectuée, have fun !"
     }
   },  
   ERROR: {
-    subject: 'Booking has failed for %date on court %court',
-    text: "I have failed you. I'm pretty sure the court is not available."
+    subject: 'Erreur de réservation pour le %date sur le court %court',
+    text: "La réservation n'a pas pas être effectuée, le court doit être déjà occupé !"
   }
 }
 
-export const sendEmail = ({subject='test email', text='test email', to='thom.schell@gmail.com', cc='hester.borren@gmail.com'}) => {
+export const sendEmail = ({subject='test email', text='test email', to='thom.schell@gmail.com', cc=''}) => {
   return new Promise((resolve, reject) => {
     const message = {
-      from: 'tennis-booking@thomster.ddns.net',
+      from: 'tennis-booking@thomschell.com',
       to,
       cc,
       subject,
@@ -44,7 +44,7 @@ export const sendEmail = ({subject='test email', text='test email', to='thom.sch
 }
 
 export const formatEmail = (data, template) => {
-  const { court, dateObj, startTime, executionTime } = data
+  const { court, dateObj, startTime, executionTime, opponent } = data
   const executionDate = new Date(executionTime)
   const replacements = [
     { 
@@ -62,6 +62,7 @@ export const formatEmail = (data, template) => {
   ]
   return {
     subject: replacements.reduce((memo, data) => memo.replace(data.name, data.value), template.subject),
-    text: replacements.reduce((memo, data) => memo.replace(data.name, data.value), template.text)
+    text: replacements.reduce((memo, data) => memo.replace(data.name, data.value), template.text),
+    cc: opponent.email
   }
 }
